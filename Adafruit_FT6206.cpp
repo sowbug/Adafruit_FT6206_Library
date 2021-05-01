@@ -46,15 +46,19 @@ Adafruit_FT6206::Adafruit_FT6206() { touches = 0; }
 
 /**************************************************************************/
 /*!
-    @brief  Setups the I2C interface and hardware, identifies if chip is found
+    @brief  Sets up the I2C interface and hardware, identifies if chip is found
     @param  thresh Optional threshhold-for-touch value, default is
    FT6206_DEFAULT_THRESSHOLD but you can try changing it if your screen is
    too/not sensitive.
     @returns True if an FT6206 is found, false on any failure
 */
 /**************************************************************************/
-boolean Adafruit_FT6206::begin(uint8_t thresh) {
-  Wire.begin();
+boolean Adafruit_FT6206::begin(uint8_t sda, uint8_t scl, uint8_t thresh) {
+  if (sda == 0 && scl == 0) {
+    Wire.begin();
+  } else {
+    Wire.begin(sda, scl);
+  }
 
 #ifdef FT6206_DEBUG
   Serial.print("Vend ID: 0x");
@@ -90,6 +94,10 @@ boolean Adafruit_FT6206::begin(uint8_t thresh) {
   }
 
   return true;
+}
+
+boolean Adafruit_FT6206::begin(uint8_t thresh) {
+  begin(0, 0, thresh);
 }
 
 /**************************************************************************/
